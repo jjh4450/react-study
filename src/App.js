@@ -1,31 +1,43 @@
 import logo from './logo.svg';
 import './App.css';
 
-function Header(){
+function Header(props){
+  // console.log('props', props, props.title);
   return(
     <header>
-      <h1><a href='/'>WEEEB</a></h1>
+      <h1><a href='/'>{props.title}</a></h1>
     </header>
   );
 }
 
+function Nav(){
+  return(
+    <nav>
+      <ol>
+        <li><a href='/read/1'>html</a></li>
+        <li><a href='/read/2'>css</a></li>
+        <li><a href='/read/3'>js</a></li>
+      </ol>
+    </nav>
+  );
+}
+
+function Article(props){
+  return(
+    <article>
+      <h2>{props.title}</h2>
+      {props.body}
+    </article>
+  );
+}
 function App() {
   return (
     <div>
-      <Header></Header>
-      <Header></Header>
-      <Header></Header>
-      <nav>
-        <ol>
-          <li><a href='/read/1'>html</a></li>
-          <li><a href='/read/2'>css</a></li>
-          <li><a href='/read/3'>js</a></li>
-        </ol>
-      </nav>
-      <article>
-        <h2>Welcome</h2>
-        Hello, WEB!
-      </article>
+      <Header title='BAM'></Header>
+      <Nav></Nav>
+      <Article title='Welcome' body = 'Hello Web'></Article>
+      <Article title='hi' body = 'react'></Article>
+      <Article title='pretty' body = 'cool'></Article>
     </div>
   );
 }
