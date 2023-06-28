@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import { useState } from 'react';
 
 function Header(props){
   // console.log('props', props, props.title);
@@ -23,25 +24,27 @@ function Nav(props){
   const lis = [];
   for(let i=0; i<props.topics.length; i++){
     let topic = props.topics[i];
-    lis.push(<li key={topic.id}>
-               <a id = {topic.id} href={'/read/'+topic.id} onClick={event=>{ //인자가 하나라면 () 생략 가능
-                  /*
-                    id 태크가 추가된 이유
-                    리엑트에서 반복문을 사용할 때는 고유한 key를 사용해야한다.
-                    그래서 id를 사용했다.
-                  */
-                  event.preventDefault(); // a태그의 기본동작을 막는다.
-                  props.onChangeMode(event.target.id); // App.js의 onChangeMode()를 실행한다.
-                  /*
-                    event.target은 이벤트를 발생시킨 태그를 가리킨다.
-                    이 상황에서는 a태그를 가리킨다.
-                    따라서 event.target.id는 a태그의 id를 가리킨다.
-                    a태크의 id는 topics의 id와 같다.
-                  */
-               }}>
-                 {topic.title}
-               </a>
-             </li>);
+    lis.push(
+    <li key={topic.id}>
+      <a id = {topic.id} href={'/read/'+topic.id} onClick={event=>{ //인자가 하나라면 () 생략 가능
+        /*
+          id 태크가 추가된 이유
+          리엑트에서 반복문을 사용할 때는 고유한 key를 사용해야한다.
+          그래서 id를 사용했다.
+        */
+        event.preventDefault(); // a태그의 기본동작을 막는다.
+        props.onChangeMode(event.target.id); // App.js의 onChangeMode()를 실행한다.
+        /*
+          event.target은 이벤트를 발생시킨 태그를 가리킨다.
+          이 상황에서는 a태그를 가리킨다.
+          따라서 event.target.id는 a태그의 id를 가리킨다.
+          a태크의 id는 topics의 id와 같다.
+        */
+      }}>
+        {topic.title}
+      </a>
+  </li>
+             );
   }
   return(
     <nav>
