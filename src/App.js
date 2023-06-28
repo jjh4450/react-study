@@ -5,7 +5,7 @@ function Header(props){
   // console.log('props', props, props.title);
   return(
     <header>
-      <h1><a href='/' onClick={function(event){
+      <h1><a href='/' onClick={(event)=>{
         event.preventDefault(); // a태그의 기본동작을 막는다.
         props.onChageMode(); // App.js의 onChageMode()를 실행한다.
       }}>{props.title}</a></h1>
@@ -44,7 +44,7 @@ function App() {
   ]
   return (
     <div>
-      <Header title='BAM' onChageMode={function(){
+      <Header title='BAM' onChageMode={()=>{
         alert('hi');
       }}></Header>
       <Nav topics={topics}></Nav>
