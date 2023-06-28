@@ -63,23 +63,37 @@ function Article(props){
     </article>
   );
 }
+
+
 function App() {
+  const [mode, setMode] = useState('welcome');
+  const [selectedId, setSelectedId] = useState(null); // topics의 id와 같다.
   const topics = [
     {id:1, title:'html', body:'html is ...'},
     {id:2, title:'css', body:'css is ...'},
     {id:3, title:'js', body:'javascript is ...'}
   ]
+
+  let content = null;
+  if(mode === 'welcome'){
+    content = <Article title='Welcome' body = 'Hello Web'></Article>
+  }else if(mode === 'read'){
+    content = <Article title={topics[selectedId-1].title} body={topics[selectedId-1].body}></Article>
+  }
+
   return (
     <div>
-      <Header title='BAM' onChangeMode={()=>{
-        alert('hi');
+      <Header title='WEEEEB' onChangeMode={()=>{
+        setMode('welcome');
       }}></Header>
-      <Nav topics={topics} onChangeMode={(id)=>{
-        alert(id);
+      <Nav topics={topics} onChangeMode={(_id)=>{
+        setMode('read');
+        setSelectedId(_id);
       }}></Nav>
-      <Article title='Welcome' body = 'Hello Web'></Article>
-      <Article title='hi' body = 'react'></Article>
-      <Article title='pretty' body = 'cool'></Article>
+      {content}
+      {/* <Article title='Welcome' body = 'Hello Web'></Article> */}
+      {/* <Article title='hi' body = 'react'></Article>
+      <Article title='pretty' body = 'cool'></Article> */}
     </div>
   );
 }
