@@ -70,7 +70,7 @@ function App() {
     {id:3, title:'js', body:'javascript is ...'}
   ]
   return (
-    <div>H
+    <div>
       <Header title='BAM' onChangeMode={()=>{
         alert('hi');
       }}></Header>
