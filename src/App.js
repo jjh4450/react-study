@@ -84,6 +84,41 @@ function Create(props){
   );
 }
 
+function Update(props){
+  const [title, setTitle] = useState(props.title);
+  const [body, setBody] = useState(props.body);
+  return(
+    <article>
+      <h2>Update</h2>
+      <form action='/create_process' method='post' onSubmit={(event)=>{
+        event.preventDefault(); // form태그의 기본동작을 막는다. (action의 주소로 이동하지 않는다.)
+        const title = event.target.title.value; // title이라는 name을 가진 태그의 value를 가져온다.
+        const body = event.target.body.value; // body라는 name을 가진 태그의 value를 가져온다.
+        // console.log(title, body);
+        props.onUpdate(title, body); // App.js의 onCreate()를 실행한다.
+      }}>
+        {/*
+          onchange 와 onChange의 차이
+          onchange는 input태그의 값이 바뀔 때마다 실행된다.
+          onChange는 input태그의 값이 바뀌고 엔터를 치거나 포커스를 잃었을 때 실행된다.
+          onChange를 사용하지 않는다면 값이 수정되지 않는다.
+          이유는 리엑트가 value태그에 지정된 input태그의 값을 관리하기 때문이다.
+          따라서 onChange를 사용해야 리엑트가 input태그의 값을 관리할 수 있다.
+        */}
+        <p><input type='text' name='title' placeholder='title' value={title} onChange={event=>{
+          // console.log(event.target.value);
+          setTitle(event.target.value);
+        }}></input></p>
+        <p><textarea name='body' placeholder='body' value={body} onChange={event=>{
+          // console.log(event.target.value);
+          setBody(event.target.value);
+        }}></textarea></p>
+        <p><input type='submit' value="Update"></input></p>
+      </form>
+    </article>
+  );
+}
+
 function App() {
   const [mode, setMode] = useState('welcome');
   const [selectedId, setSelectedId] = useState(null); // topics의 id와 같다.
@@ -95,10 +130,16 @@ function App() {
   ]);
 
   let content = null;
+  let contextControl = null;
+
   if(mode === 'welcome'){
     content = <Article title='Welcome' body = 'Hello Web'></Article>
   }else if(mode === 'read'){
     content = <Article title={topics[selectedId-1].title} body={topics[selectedId-1].body}></Article>
+    contextControl = <li><a href={'/Update/'+selectedId} onClick={event=>{
+      event.preventDefault();
+      setMode('update');
+    }}>Update</a></li>
   }else if(mode === 'create'){ // 생성 버튼을 눌렀을 때
     content = <Create onCreate={(title, body)=>{ // Create 컴포넌트의 onCreate 함수를 실행한다.
       const newTopics = {id:nextid, title:title, body:body};
@@ -114,6 +155,14 @@ function App() {
       */
       setMode('read'); // App 함수의 content 항목을 read 모드로 변경 -> 새로 생성된 내용을 보여준다.
     }}></Create>
+  }else if(mode === 'update'){
+    content = <Update title = {topics[selectedId-1].title} body = {topics[selectedId-1].body} onUpdate={(title, body)=>{
+      const newTopics = [...topics]; // topics를 복사한다.
+      newTopics[selectedId-1].title = title; // 복사한 topics의 내용을 변경한다.
+      newTopics[selectedId-1].body = body; // 복사한 topics의 내용을 변경한다.
+      setTopics(newTopics); // 변경한 내용을 적용한다.
+      setMode('read'); // App 함수의 content 항목을 read 모드로 변경 -> 새로 생성된 내용을 보여준다.
+    }}></Update>
   }
 
   return (
@@ -126,14 +175,16 @@ function App() {
         setSelectedId(_id);
       }}></Nav>
       {content}
-      <a href='/create' onClick={(event)=>{ // 생성 버튼
-        event.preventDefault(); // a태그의 기본동작을 막는다.(페이지 이동을 막음)
-        setMode('create'); // App 함수의 content 항목을 create 모드로 변경
-      }
-      }>create</a>
-      {/* <Article title='Welcome' body = 'Hello Web'></Article> */}
-      {/* <Article title='hi' body = 'react'></Article>
-      <Article title='pretty' body = 'cool'></Article> */}
+      <ul>
+        <li><a href='/create' onClick={(event)=>{ // 생성 버튼
+            event.preventDefault(); // a태그의 기본동작을 막는다.(페이지 이동을 막음)
+            setMode('create'); // App 함수의 content 항목을 create 모드로 변경
+          }
+          }>create</a>
+        </li>
+        {contextControl}
+      </ul>
+      
     </div>
   );
 }
