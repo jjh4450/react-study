@@ -3,7 +3,7 @@ import './App.css';
 import { useState } from 'react';
 
 function Header(props){
-  // console.log('props', props, props.title);
+  console.log('props', props, props.title);
   return(
     <header>
       <h1><a href='/' onClick={(event)=>{ // a태그를 클릭했을 때(on'c'lick != on'C'lick)
@@ -72,7 +72,7 @@ function Create(props){
         event.preventDefault(); // form태그의 기본동작을 막는다. (action의 주소로 이동하지 않는다.)
         const title = event.target.title.value; // title이라는 name을 가진 태그의 value를 가져온다.
         const body = event.target.body.value; // body라는 name을 가진 태그의 value를 가져온다.
-        // console.log(title, body);
+        console.log(title, body);
         props.onCreate(title, body); // App.js의 onCreate()를 실행한다.
       }}>
         {/* 이하는 전형적인 form태그이다. */}
@@ -94,7 +94,7 @@ function Update(props){
         event.preventDefault(); // form태그의 기본동작을 막는다. (action의 주소로 이동하지 않는다.)
         const title = event.target.title.value; // title이라는 name을 가진 태그의 value를 가져온다.
         const body = event.target.body.value; // body라는 name을 가진 태그의 value를 가져온다.
-        // console.log(title, body);
+        console.log(title, body);
         props.onUpdate(title, body); // App.js의 onCreate()를 실행한다.
       }}>
         {/*
@@ -106,11 +106,11 @@ function Update(props){
           따라서 onChange를 사용해야 리엑트가 input태그의 값을 관리할 수 있다.
         */}
         <p><input type='text' name='title' placeholder='title' value={title} onChange={event=>{
-          // console.log(event.target.value);
+          console.log(event.target.value);
           setTitle(event.target.value);
         }}></input></p>
         <p><textarea name='body' placeholder='body' value={body} onChange={event=>{
-          // console.log(event.target.value);
+          console.log(event.target.value);
           setBody(event.target.value);
         }}></textarea></p>
         <p><input type='submit' value="Update"></input></p>
@@ -135,11 +135,29 @@ function App() {
   if(mode === 'welcome'){
     content = <Article title='Welcome' body = 'Hello Web'></Article>
   }else if(mode === 'read'){
-    content = <Article title={topics[selectedId-1].title} body={topics[selectedId-1].body}></Article>
-    contextControl = <li><a href={'/Update/'+selectedId} onClick={event=>{
-      event.preventDefault();
-      setMode('update');
-    }}>Update</a></li>
+    console.log(selectedId);
+    for(let i=0; i<topics.length; i++){
+      if(topics[i].id === Number(selectedId)){
+        content = <Article title={topics[i].title} body={topics[i].body}></Article>
+        break;
+      }
+    }
+    contextControl = <> {/*빈 태그(fragment)로 묶는 이유: 리엑트에서 태그를 다룰때는 하나의 태그 안에 들어가야 하기 때문*/}
+      <li><a href={'/Update/'+selectedId} onClick={event=>{
+        event.preventDefault();
+        setMode('update');
+      }}>Update</a></li>
+      <li><input type='button' value='delete' onClick={()=>{
+        // console.log(topics);
+        const newTopics = topics.filter(topic=>topic.id !== Number(selectedId));
+        /*
+          filter()는 배열의 내용을 걸러내는 함수이다.
+          filter()의 인자로 함수를 넣어주면 배열의 내용을 함수에 넣어주고 true를 반환하는 것만 걸러낸다.
+          즉, 위의 코드는 topics의 내용을 topic에 넣어주고 topic.id가 selectedId와 같지 않은 것만 걸러내어 newTopics에 넣어준다.
+        */
+        setTopics(newTopics);
+      }}></input></li>
+    </>
   }else if(mode === 'create'){ // 생성 버튼을 눌렀을 때
     content = <Create onCreate={(title, body)=>{ // Create 컴포넌트의 onCreate 함수를 실행한다.
       const newTopics = {id:nextid, title:title, body:body};
