@@ -153,9 +153,10 @@ function App() {
         /*
           filter()는 배열의 내용을 걸러내는 함수이다.
           filter()의 인자로 함수를 넣어주면 배열의 내용을 함수에 넣어주고 true를 반환하는 것만 걸러낸다.
-          즉, 위의 코드는 topics의 내용을 topic에 넣어주고 topic.id가 selectedId와 같지 않은 것만 걸러내어 newTopics에 넣어준다.
+          즉, 위의 코드는 topics의 내용을 topic에 넣어주고 topic.id가 selectedId와 같지 않은 것만 걸러내어 newTopics에 넣어준다.   
         */
         setTopics(newTopics);
+        setMode('welcome');
       }}></input></li>
     </>
   }else if(mode === 'create'){ // 생성 버튼을 눌렀을 때
