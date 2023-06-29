@@ -64,21 +64,56 @@ function Article(props){
   );
 }
 
+function Create(props){
+  return(
+    <article>
+      <h2>Create</h2>
+      <form action='/create_process' method='post' onSubmit={(event)=>{
+        event.preventDefault(); // form태그의 기본동작을 막는다. (action의 주소로 이동하지 않는다.)
+        const title = event.target.title.value; // title이라는 name을 가진 태그의 value를 가져온다.
+        const body = event.target.body.value; // body라는 name을 가진 태그의 value를 가져온다.
+        // console.log(title, body);
+        props.onCreate(title, body); // App.js의 onCreate()를 실행한다.
+      }}>
+        {/* 이하는 전형적인 form태그이다. */}
+        <p><input type='text' name='title' placeholder='title'></input></p>
+        <p><textarea name='body' placeholder='body'></textarea></p>
+        <p><input type='submit'></input></p>
+      </form>
+    </article>
+  );
+}
 
 function App() {
   const [mode, setMode] = useState('welcome');
   const [selectedId, setSelectedId] = useState(null); // topics의 id와 같다.
-  const topics = [
+  const [nextid, setNextId] = useState(4); // topics의 다음 id상태를 관리한다.
+  const [topics, setTopics] = useState([ // topics를 useState로 관리한다.
     {id:1, title:'html', body:'html is ...'},
     {id:2, title:'css', body:'css is ...'},
     {id:3, title:'js', body:'javascript is ...'}
-  ]
+  ]);
 
   let content = null;
   if(mode === 'welcome'){
     content = <Article title='Welcome' body = 'Hello Web'></Article>
   }else if(mode === 'read'){
     content = <Article title={topics[selectedId-1].title} body={topics[selectedId-1].body}></Article>
+  }else if(mode === 'create'){ // 생성 버튼을 눌렀을 때
+    content = <Create onCreate={(title, body)=>{ // Create 컴포넌트의 onCreate 함수를 실행한다.
+      const newTopics = {id:nextid, title:title, body:body};
+      setNextId(nextid+1); // 다음 id를 1 증가시킨다.
+      if(selectedId === null){ // 선택된 id가 없다면 (selectedId: content에서 내용물을 고를때 사용되는 변수)
+        setSelectedId(nextid); // 선택된 id를 다음 id로 설정한다.
+      }
+      setTopics([...topics, newTopics]); // topics에 newTopics를 추가한다.
+      /*
+        ...은 spread operator라고 한다.
+        topics의 내용을 그대로 가져오고 newTopics를 추가한다.
+        복사를 하는 이유는 리엑트가 상태를 변경된 것을 감지하도록 하기 위해서이다.
+      */
+      setMode('read'); // App 함수의 content 항목을 read 모드로 변경 -> 새로 생성된 내용을 보여준다.
+    }}></Create>
   }
 
   return (
@@ -91,6 +126,11 @@ function App() {
         setSelectedId(_id);
       }}></Nav>
       {content}
+      <a href='/create' onClick={(event)=>{ // 생성 버튼
+        event.preventDefault(); // a태그의 기본동작을 막는다.(페이지 이동을 막음)
+        setMode('create'); // App 함수의 content 항목을 create 모드로 변경
+      }
+      }>create</a>
       {/* <Article title='Welcome' body = 'Hello Web'></Article> */}
       {/* <Article title='hi' body = 'react'></Article>
       <Article title='pretty' body = 'cool'></Article> */}
